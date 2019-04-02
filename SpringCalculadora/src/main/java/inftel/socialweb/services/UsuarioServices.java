@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 
 import inftel.socialweb.facade.UsuarioRepository;
+import inftel.socialweb.model.Grupo;
 import inftel.socialweb.model.Publicacion;
 import inftel.socialweb.model.Usuario;
 
@@ -19,22 +20,35 @@ public class UsuarioServices {
 	
 	@Autowired
     UsuarioRepository usuariyrepository;
+	
+	private List<Usuario> respaldo;
+	private Usuario usuarioservicio;
 
     public List<Usuario> getAllUsers() {
-    	List<Usuario> usu = this.usuariyrepository.findAll();
-    	for (Usuario usuario : usu) {
+    	
+    	List<Usuario> usus = this.usuariyrepository.findAll();
+    	
+    	for (Usuario usuario : usus) {
+    		
 			for(Usuario amigo : usuario.getUsuarioList()) {
-				amigo.setUsuarioList(null);
-				amigo.setUsuarioList1(null);
+				amigo.setUsuarioList(new ArrayList<Usuario>());
+				amigo.setUsuarioList1(new ArrayList<Usuario>());
 			}
+			for(Grupo grupo: usuario.getGrupoList()) {
+				grupo.setUsuarioList(new ArrayList<Usuario>());
+			}
+			for(Publicacion publi: usuario.getPublicacionList()) {
+				publi.setUsuarioId(new Usuario());
+			}	
 		}
     	
-        return this.usuariyrepository.findAll();
+        return usus;
     }
 
     public Usuario addUser(Usuario user) {
         return this.usuariyrepository.save(user);
     }
+
     
     public void removeUser(BigDecimal id) {
         try {
@@ -46,7 +60,23 @@ public class UsuarioServices {
     }
     
     public Usuario findById(BigDecimal id) {
-    	return this.usuariyrepository.findOne(id);
+    	respaldo = new ArrayList<Usuario>();
+    	Usuario usuario = this.usuariyrepository.findOne(id);
+    	usuarioservicio = usuario;
+    	for(Usuario amigo : usuario.getUsuarioList()) {
+			amigo.setUsuarioList(new ArrayList<Usuario>());
+			amigo.setUsuarioList1(new ArrayList<Usuario>());
+			respaldo.add(amigo);
+		}
+		for(Grupo grupo: usuario.getGrupoList()) {
+			grupo.setUsuarioList(new ArrayList<Usuario>());
+		}
+		for(Publicacion publi: usuario.getPublicacionList()) {
+			publi.setUsuarioId(new Usuario());
+		}
+		usuarioservicio.setUsuarioList(respaldo);
+    	
+    	return usuarioservicio;
     }
     
     public List<BigDecimal> getIdAmigos(Usuario usuario) {

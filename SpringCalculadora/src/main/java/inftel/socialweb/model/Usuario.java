@@ -106,9 +106,9 @@ public class Usuario implements Serializable {
         @JoinColumn(name = "USUARIO_ID_AMISTAD", referencedColumnName = "ID_USUARIO")})
     @ManyToMany
     private List<Usuario> usuarioList;
-    @ManyToMany(mappedBy = "usuarioList")
+    @ManyToMany(cascade = CascadeType.ALL, mappedBy = "usuarioList")
     private List<Usuario> usuarioList1;
-    @ManyToMany(mappedBy = "usuarioList")
+    @ManyToMany(cascade = CascadeType.ALL,  mappedBy = "usuarioList")
     private List<Grupo> grupoList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuarioId")
     private List<Publicacion> publicacionList;

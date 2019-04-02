@@ -79,6 +79,7 @@ public interface UsuarioRepository extends JpaRepository<Usuario, BigDecimal>{
 	//BUSCA USUARIOS DE LA LISTA DE AMIGOS
 	@Query("SELECT u FROM Usuario u WHERE u.nombre = ?1 OR u.apellidos = ?2")
 	List<Usuario> findByNombreOrApellidos(String nombre,String apellidos);
+	
 }
 
 
